@@ -11,3 +11,6 @@ if 012.345 < x then { don't compute if x <= 0 }
   until x = 0;
   write fact  { output factorial of x }
 end
+/
+/**/
+/*a*4

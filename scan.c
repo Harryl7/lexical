@@ -12,8 +12,8 @@
 typedef enum
 /* states in scanner DFA */
 {
-    START, INASSIGN, INCOMMENT, ININT, INID, DONE,
-    DOT, INFLOAT, COMMENTLEFT, COMMENTRIGHT
+    START, INASSIGN, INCOMMENT1, ININT, INID, DONE,
+    DOT, INFLOAT, COMMENT2LEFT, COMMENT2RIGHT, INCOMMENT2
 }
 StateType;
 
@@ -112,22 +112,12 @@ TokenType getToken(void)
             else if (c == '{')
             {
                 save = FALSE;
-                state = INCOMMENT;
+                state = INCOMMENT1;
             }
             else if (c == '/')
             {
-                char cc = getNextChar();
-                if (cc == '*')
-                {
-                    save = FALSE;
-                    state = INCOMMENT;
-                }
-                else
-                {
-                    ungetNextChar();
-                    state = DONE;
-                    currentToken = DIV;
-                }
+                save = FALSE;
+                state = COMMENT2LEFT;
             }
             else // ·Ç£ºÊý×Ö¡¢×ÖÄ¸¡¢':' ¡¢'{' ¡¢' ' ¡¢'\t' ¡¢'\n'¡¢'/'
             {
@@ -172,21 +162,50 @@ TokenType getToken(void)
             }
             break;
         }
-        case INCOMMENT: {
+        case INCOMMENT1: {
             save = FALSE;
             if (c == EOF)
             {
                 state = DONE;
                 currentToken = ENDFILE;
             }
-            else if (c == '}') state = START;
-            else if (c == '*') {
-                char cc = getNextChar();
-                if (cc == '/')
-                    state = START;
-                else
-                    ungetNextChar();
+            else if (c == '}')
+                state = START;
+            break;
+        }
+        case COMMENT2LEFT: {
+            save = FALSE;
+            if (c == '*')
+                state = INCOMMENT2;
+            else {
+                ungetNextChar();
+                state = DONE;
+                currentToken = DIV;
+                break;
             }
+        }
+        case INCOMMENT2: {
+            save = FALSE;
+            if (c == EOF)
+            {
+                state = DONE;
+                currentToken = ENDFILE;
+            }
+            else if (c == '*')
+                state = COMMENT2RIGHT;
+            break;
+        }
+        case COMMENT2RIGHT: {
+            save = FALSE;
+            if (c == EOF)
+            {
+                state = DONE;
+                currentToken = ENDFILE;
+            }
+            else if (c == '/')
+                state = START;
+            else if (c != '*')
+                state = INCOMMENT2;
             break;
         }
         case INASSIGN: {
