@@ -65,8 +65,9 @@ static struct
     TokenType tok;
 } reservedWords[MAXRESERVED] = {
     {"if",IF}, {"then",THEN}, {"else",ELSE}, {"end",END},
-    {"repeat",REPEAT}, {"until",UNTIL}, {"read",READ},
-    {"write",WRITE}
+    {"repeat",REPEAT}, {"until",UNTIL}, {"read",READ}, {"write",WRITE},
+    // 新增
+    {"func",FUNC}, {"return",RETURN}, {"while",WHILE}, {"void",TYPE}, {"integer",TYPE}, {"boolean",TYPE}, {"float",TYPE}
 };
 
 /* 查询一个 ID 型 token 是否为保留字（线性查找），返回类型 */
@@ -151,6 +152,15 @@ TokenType getToken(void)
                     break;
                 case ')':
                     currentToken = RPAREN;
+                    break;
+                case '[':
+                    currentToken = LSQUARE;
+                    break;
+                case ']':
+                    currentToken = RSQUARE;
+                    break;
+                case ',':
+                    currentToken = COMMA;
                     break;
                 case ';':
                     currentToken = SEMI;

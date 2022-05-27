@@ -23,7 +23,7 @@
 #endif
 
 /* 保留字的数量 */
-#define MAXRESERVED 8
+#define MAXRESERVED 15
 
 typedef enum
 /* book-keeping tokens */
@@ -34,7 +34,9 @@ typedef enum
     /* 多字符的 token */
     ID, INT, FLOAT,
     /* 特殊符号 */
-    ASSIGN, EQ, LT, PLUS, MINUS, TIMES, DIV, LPAREN, RPAREN, SEMI
+    ASSIGN, EQ, LT, PLUS, MINUS, TIMES, DIV, LPAREN, RPAREN, SEMI,
+    // 新增
+    FUNC, RETURN, WHILE, TYPE, LSQUARE, RSQUARE, COMMA
 } TokenType;
 
 extern FILE* source; /* 源代码txt文件 */
@@ -48,11 +50,16 @@ extern int lineno; /* 代码回显时输出的行号 */
 /**************************************************/
 
 typedef enum { StmtK, ExpK } NodeKind;
-typedef enum { IfK, RepeatK, AssignK, ReadK, WriteK } StmtKind;
-typedef enum { OpK, ConstK, IdK } ExpKind;
+typedef enum { IfK, RepeatK, AssignK, ReadK, WriteK, FuncK, ReturnK, WhileK, DeclareK } StmtKind;
+typedef enum { OpK, ConstK, IdK, ArrayK, ParamK, CallK } ExpKind;
 
 /* 用于类型检查 */
-typedef enum { Void, Integer, Boolean } ExpType;
+typedef enum {
+    Void, Integer, Boolean, Float, Unknown
+} ExpType;
+
+#define TYPENUM 5
+static char* typeString[TYPENUM] = { "void","integer","boolean","float","unknown" };
 
 #define MAXCHILDREN 3
 
@@ -61,16 +68,17 @@ typedef struct treeNode {
     struct treeNode* sibling;
     int lineno;
     NodeKind nodekind;
-    union {
+    struct {
         StmtKind stmt;
         ExpKind exp;
     } kind;
-    union {
-        TokenType op;
-        int val;
-        char* name;
+    struct {
+        TokenType op; // ExpKind = OpK
+        int val;      // ExpKind = ConstK | IdK(array)
+        float fval;
+        char* name;   // ExpKind = IdK; StmtKind = AssignK | ReadK | FuncK
     } attr;
-    ExpType type; /* for type checking of exps */
+    ExpType type; /* 函数参数类型 */ /* for type checking of exps */
 } TreeNode;
 
 /**************************************************/

@@ -8,12 +8,12 @@
 #include "globals.h"
 
 /* if TRUE ---> scanner-only */
-#define NO_PARSE TRUE
+#define NO_PARSE FALSE
 /* if TRUE ---> parser-only */
-#define NO_ANALYZE FALSE
+#define NO_ANALYZE TRUE
 
 /* if TRUE ---> don't generate code */
-#define NO_CODE FALSE
+#define NO_CODE TRUE
 
 #include "util.h"
 #if NO_PARSE
@@ -37,7 +37,7 @@ FILE * code;
 /* allocate and set tracing flags */
 int EchoSource = FALSE;
 int TraceScan = TRUE;
-int TraceParse = FALSE;
+int TraceParse = TRUE;
 int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
 

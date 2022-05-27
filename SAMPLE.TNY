@@ -1,16 +1,23 @@
-{ Sample program
-  in TINY language -
-  computes factorial
-}
-read x; { input an integer }
-if 012.345 < x then { don't compute if x <= 0 }
+{
+read x;
+if 0 < x then
   fact := 1;
   repeat
     fact := fact * x;
-    x := x - 11.9
+    x := x - 1
   until x = 0;
-  write fact  { output factorial of x }
+  write fact
 end
-/
-/**/
-/*a*4
+
+while (x = 1)
+  x := test(100,100) * 1.23;
+  x := x / c[2]
+end
+}
+
+
+func test(integer a, float b)
+  read a;
+  write b
+end
+float a[10], b[20], c[30]
